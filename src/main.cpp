@@ -134,7 +134,7 @@ void loop()
                              // Сброс признака авторизации в "False"
     Serial.println("_____Auth OFF_____");
     Serial.println(" ");
-    draw_intro();            // Рисуем заставку
+    // draw_intro();            // Рисуем заставку
   }
 }
 
