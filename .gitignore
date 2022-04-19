@@ -3,6 +3,14 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
-.vscode/
-.include/
-.test/
+.vscode
+.include
+.test
+.gitignore
+src/include
+src/.DS_Store
+include
+test
+vscode
+pio
+platformio.ini
