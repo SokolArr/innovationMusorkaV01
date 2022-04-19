@@ -23,15 +23,10 @@ int soundActiv_Value = 500;           // Уровень по которому с
 int metalMoment_Value = 0;            // Моментальное значение 
 int metalActiv_Value = 450;           // Уровень по которому сравниваем //!--------------------
 
-int pin;
-int angle;
-int pulseWidth;
-
 bool flagAuth = false;                // Признак успешной авторизации
 bool flagListening = false;           // Признак состояния опрашивания датчика звука
 bool flagSoundLikeGlass = false;      // Признак звука стекла
 bool flagDetectLikeMetal = false;     // Признак звука металла 
-bool flagRotate = false;
 //i --------------------------------------------Изменяемые переменные--------------------------------------------
 
 //b --------------------------------------------Настройка Металлодетектора--------------------------------------------
@@ -109,6 +104,7 @@ void loop()
   }
 
   metalHandler();             //! Опрос показаний металлодетектора
+  servoPulse(servo1Pin,90);
   
   if (flagAuth){              // Если авторизация прошла успешно
     if (check_metal()){
@@ -199,12 +195,6 @@ void yield() {
       Serial.println(soundMoment_Value);
     }
   }  
-  if(flagRotate){
-    // convert angle to 500-2480 pulse width
-    digitalWrite(pin, HIGH); // set the level of servo pin as high
-    delayMicroseconds(pulseWidth); // delay microsecond of pulse width
-    digitalWrite(pin, LOW); // set the level of servo pin as low
-  }
 }
 
 void draw_message(String mes1, String mes2){
@@ -276,8 +266,10 @@ void metalHandler(){
 // Движение сервопривода
 void servoPulse(int pin, int angle)
 {
-  flagRotate = true;
-  pulseWidth = (angle * 11) + 500; 
+	// convert angle to 500-2480 pulse width
+	int pulseWidth = (angle * 11) + 500; 
+	digitalWrite(pin, HIGH); // set the level of servo pin as high
+	delayMicroseconds(pulseWidth); // delay microsecond of pulse width
+	digitalWrite(pin, LOW); // set the level of servo pin as low
 	delay(20 - pulseWidth / 1000);
-  flagRotate = false;
 }
