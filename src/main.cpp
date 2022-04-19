@@ -58,6 +58,7 @@ bool check_glass();
 float absf(float);
 void metalHandler();
 void servoPulse(int , int );
+void draw_message(String, String);
 //i--------------------------------------------Объявление функций--------------------------------------------
 
 void setup()
@@ -123,6 +124,7 @@ void loop()
       } else {
         Serial.println("---It is plastic material!");
         Serial.println("GO to plastic box");
+        draw_message("Material: ","plastic");
         servoPulse(servo3Pin,90);     
         servoPulse(servo4Pin,0); 
         delay(500);          //? Задержка на движение бутылки
@@ -148,6 +150,7 @@ bool check_metal (){
     Serial.println("---Metal detected!");
     Serial.println("Stop metal check");
     Serial.println(" ");
+    draw_message("Material: ","metal");
     return true;
   } else {
     Serial.println("---NO metal detected!");
@@ -170,6 +173,7 @@ bool check_glass (){
   if (flagSoundLikeGlass){
     Serial.println("---Sounds like glass");
     Serial.println(" ");
+    draw_message("Material: ","glass");
     flagSoundLikeGlass = false; // Сброс признака звука стекла
     return true;
   } else {
@@ -190,6 +194,14 @@ void yield() {
       Serial.println(soundMoment_Value);
     }
   }  
+}
+
+void draw_message(String mes1, String mes2){
+  lcd.clear();
+  lcd.setCursor(0, 0); 
+  lcd.print(mes1);
+  lcd.setCursor(0, 1); 
+  lcd.print(mes2);
 }
 
 // Отрисовка на дисплее начального сообщения
