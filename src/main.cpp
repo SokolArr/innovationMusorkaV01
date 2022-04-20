@@ -3,9 +3,6 @@
 #include <SPI.h>
 #include <MFRC522.h>
 #include <Arduino.h>
-#include <Servo.h>
-
-Servo myservo;
 
 LiquidCrystal_I2C lcd(0x27,16,2);  // Устанавливаем дисплей
 
@@ -69,8 +66,6 @@ void setup()
   Serial.begin(9600);     // Инициализация послед. порта
   SPI.begin();            // Инициализация шины SPI
 
-  myservo.attach(2);
-
   mfrc522.PCD_Init();     // Инициализация считывателя RC522
   lcd.init();              
   lcd.backlight();        // Включаем подсветку дисплея
@@ -81,12 +76,12 @@ void setup()
   SET(TIMSK1, OCF1A);
 
   // Начальные положения сервоприводов-
-  // servoPulse(servo1Pin, 0);
-  // servoPulse(servo2Pin, 0);
-  // servoPulse(servo3Pin, 0);
-  // servoPulse(servo4Pin, 0);
-  // servoPulse(servo5Pin, 0);
-  // servoPulse(servo6Pin, 0);
+  servoPulse(servo1Pin, 0);
+  servoPulse(servo2Pin, 0);
+  servoPulse(servo3Pin, 0);
+  servoPulse(servo4Pin, 0);
+  servoPulse(servo5Pin, 0);
+  servoPulse(servo6Pin, 0);
 
   draw_intro(); // Рисуем заставку
   
@@ -108,19 +103,18 @@ void loop()
     Serial.println(ID);
   }
 
-  myservo.write(90);
   metalHandler();             //! Опрос показаний металлодетектора
-  // servoPulse(servo1Pin,90);
+  servoPulse(servo1Pin,90);
 
   if (flagAuth){              // Если авторизация прошла успешно
     if (check_metal()){
       Serial.println("GO to metal box");
-      // servoPulse(servo1Pin,90);    
+      servoPulse(servo1Pin,90);    
       servoPulse(servo2Pin,90);
       delay(500);             //? Задержка на падение бутылки от металла
     } else {
       Serial.println("GO to glass check");
-      // servoPulse(servo1Pin,0);
+      servoPulse(servo1Pin,0);
       servoPulse(servo2Pin, 90);
       //delay(200);           //? Задержка на движение бутылки от металла???
       if (check_glass()){
@@ -272,10 +266,13 @@ void metalHandler(){
 // Движение сервопривода
 void servoPulse(int pin, int angle)
 {
-	// convert angle to 500-2480 pulse width
-	int pulseWidth = (angle * 11) + 500; 
-	digitalWrite(pin, HIGH); // set the level of servo pin as high
-	delayMicroseconds(pulseWidth); // delay microsecond of pulse width
-	digitalWrite(pin, LOW); // set the level of servo pin as low
-	delay(20 - pulseWidth / 1000);
+  for (int i = 0; i < 10000; i++)
+  {
+    // convert angle to 500-2480 pulse width
+    int pulseWidth = (angle * 11) + 500; 
+    digitalWrite(pin, HIGH); // set the level of servo pin as high
+    delayMicroseconds(pulseWidth); // delay microsecond of pulse width
+    digitalWrite(pin, LOW); // set the level of servo pin as low
+    delay(20 - pulseWidth / 1000);
+  }
 }
